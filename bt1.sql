@@ -171,22 +171,7 @@ INSERT INTO Wallets (patient_id, balance, status) VALUES
 -- 1. Câu lệnh CALL để tái hiện lỗi hệ thống:
 -- Dựa vào dữ liệu mẫu, lịch khám 105 đang ở trạng thái 'Completed'. Nếu gọi thủ tục cũ với ID này, hệ thống vẫn sẽ cho phép hủy.
 -- Đoạn mã nguồn hiện tại đang chạy trên Database
-
-DELIMITER //
-
-CREATE PROCEDURE CancelAppointment(IN p_appointment_id INT)
-BEGIN
-
-    -- Cập nhật trạng thái lịch khám thành "Đã hủy"
-    UPDATE Appointments
-    SET status = 'Cancelled'
-    WHERE appointment_id = p_appointment_id;
-
-END //
-
-DELIMITER ;
-
-CALL CancelAppointment(105);
+			CALL CancelAppointment(105);
 -- 2. Giải thích nguyên nhân lỗi:
 -- Đoạn mã hiện tại trong ảnh image_47d653.png thực hiện câu lệnh UPDATE mù (blind update), tức là nó ghi đè trực tiếp trạng thái thành 'Cancelled' dựa vào appointment_id mà không có điều kiện kiểm tra (WHERE hoặc IF) xem trạng thái hiện tại của lịch hẹn đó có đúng là 'Pending' hay không. Do đó, các lịch đã hoàn tất (Completed) vẫn bị cập nhật sai.
 
